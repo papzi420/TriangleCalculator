@@ -1,0 +1,56 @@
+﻿<Window x:Class="TriangleCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TriangleCalculator"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="463.316" Width="497.585" Loaded="Window_Loaded">
+	<Grid Background="#222222">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="90"></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="262"></ColumnDefinition>
+			<ColumnDefinition></ColumnDefinition>
+		</Grid.ColumnDefinitions>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition></RowDefinition>
+				<RowDefinition></RowDefinition>
+				<RowDefinition></RowDefinition>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<TextBox x:Name="ALength" Grid.Row="0" Grid.Column="0" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+			<TextBox x:Name="BLength" Grid.Row="1" Grid.Column="0" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+			<TextBox x:Name="CLength" Grid.Row="2" Grid.Column="0" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+			<TextBox x:Name="AAngle" Grid.Row="0" Grid.Column="1" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+			<TextBox x:Name="BAngle" Grid.Row="1" Grid.Column="1" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+			<TextBox x:Name="CAngle" Grid.Row="2" Grid.Column="1" Margin="5" Background="#222222" BorderThickness="0,0,0,1" Foreground="#FFFFFF" TextChanged="dataOnChange"/>
+		</Grid>
+		<Grid x:Name="CanvasGrid" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition Height="23"/>
+			</Grid.RowDefinitions>
+			<Canvas x:Name="ResultCanvas">
+				<Label x:Name="label" Content="C" Canvas.Left="122" Canvas.Top="-39" Foreground="White"/>
+				<Label x:Name="label_Copy" Content="B" Canvas.Left="123" Canvas.Top="-70" Foreground="White"/>
+				<Label x:Name="label_Copy1" Content="A" Canvas.Left="122" Canvas.Top="-94" Foreground="White"/>
+				<Label x:Name="label_Copy2" Content="a" Canvas.Left="-2" Canvas.Top="-94" Foreground="White"/>
+				<Label x:Name="label_Copy3" Content="b" Canvas.Left="-2" Canvas.Top="-70" Foreground="White"/>
+				<Label x:Name="label_Copy4" Content="c" Canvas.Left="-2" Canvas.Top="-39" Foreground="White"/>
+			</Canvas>
+			<StatusBar Grid.Row="1">
+				<StatusBarItem>
+					<TextBlock x:Name="statusBarText"></TextBlock>
+				</StatusBarItem>
+			</StatusBar>
+		</Grid>
+		<Button x:Name="calculate" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="59,44,0,0" VerticalAlignment="Top" Width="75" Click="calculate_Click"/>
+	</Grid>
+</Window>
