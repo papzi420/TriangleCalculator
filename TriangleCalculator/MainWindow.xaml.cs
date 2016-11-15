@@ -106,14 +106,44 @@ namespace TriangleCalculator
 			public Triangle(Length _ALength, Angle _BAngle, Length _CLength)
 				: this(_ALength, _CLength, _BAngle)
 			{
-				banan.Swap(ref AAngle, ref CAngle);
-				banan.Swap(ref ALength, ref CLength);
+				Angle tmpAngle = BAngle;
+				BAngle = CAngle;
+				CAngle = tmpAngle;
+
+				Length tmpLength = BLength;
+				BLength = CLength;
+				CLength = tmpLength;
 			}
 			public Triangle(Angle _AAngle, Length _BLength, Length _CLength)
 				: this(_CLength, _BLength, _AAngle)
 			{
-				banan.Swap(ref AAngle, ref CAngle);
-				banan.Swap(ref ALength, ref CLength);
+				Angle tmpAngle = CAngle;
+				CAngle = AAngle;
+				AAngle = tmpAngle;
+
+				Length tmpLength = CLength;
+				CLength = ALength;
+				ALength = tmpLength;
+			}
+			
+			public Length getc(TriangleInfo info)
+			{
+				bool hasAllBInfo = info.B != null && info.b != null;
+				bool hasAllAInfo = info.A != null && info.a != null;
+				if (hasAllBInfo || hasAllBInfo && info.C != null)
+				{
+					return new Length((hasAllAInfo ? Math.Sin(info.A.Value.angleR) / info.a.Value : Math.Sin(info.B.Value.angleR) / info.b.Value) * Math.Sin(info.C.Value.angleR));
+				}
+				else if ()
+				{
+
+				}
+			}
+
+			/*Knowing one angle and 2 lengths with 1 length with the same symbol as the angle*/
+			public Triangle(TriangleInfo info)
+			{
+				
 			}
 		}
 
@@ -136,12 +166,12 @@ namespace TriangleCalculator
 					return false;
 				}
 			}
-			public double? a;
-			public double? b;
-			public double? c;
-			public double? A;
-			public double? B;
-			public double? C;
+			public Length? a;
+			public Length? b;
+			public Length? c;
+			public Angle? A;
+			public Angle? B;
+			public Angle? C;
 		}
 
 		public MainWindow()
@@ -158,12 +188,12 @@ namespace TriangleCalculator
 		public TriangleInfo getInfo()
 		{
 			TriangleInfo info = new TriangleInfo();
-			info.a = (ALength.Text == "") ? (double?) null : double.Parse(ALength.Text);
-			info.b = (BLength.Text == "") ? (double?) null : double.Parse(BLength.Text);
-			info.c = (CLength.Text == "") ? (double?) null : double.Parse(CLength.Text);
-			info.A = (AAngle.Text == "") ? (double?) null : double.Parse(AAngle.Text);
-			info.B = (BAngle.Text == "") ? (double?) null : double.Parse(BAngle.Text);
-			info.C = (CAngle.Text == "") ? (double?) null : double.Parse(CAngle.Text);
+			info.a = (ALength.Text == "") ? (Length?) null : new Length(double.Parse(ALength.Text));
+			info.b = (BLength.Text == "") ? (Length?) null : new Length(double.Parse(BLength.Text));
+			info.c = (CLength.Text == "") ? (Length?) null : new Length(double.Parse(CLength.Text));
+			info.A = (AAngle.Text == "") ? (Angle?) null : new Angle(double.Parse(AAngle.Text));
+			info.B = (BAngle.Text == "") ? (Angle?) null : new Angle(double.Parse(BAngle.Text));
+			info.C = (CAngle.Text == "") ? (Angle?) null : new Angle(double.Parse(CAngle.Text));
 			return info;
 		}
 
@@ -221,16 +251,23 @@ namespace TriangleCalculator
 			skipDataChange = true;
 			if (triangleInfo.a != null && triangleInfo.b != null && triangleInfo.C != null)
 			{
-				Triangle triangle = new Triangle(new Length(triangleInfo.a.Value), new Length(triangleInfo.b.Value), new Angle(triangleInfo.C.Value));
+				Triangle triangle = new Triangle(triangleInfo.a.Value, triangleInfo.b.Value, triangleInfo.C.Value		);
 				AAngle.Text = triangle.AAngle.angle.ToString();
 				BAngle.Text = triangle.BAngle.angle.ToString();
 				CLength.Text = triangle.CLength.length.ToString();
 			}
 			else if (triangleInfo.a != null && triangleInfo.B != null & triangleInfo.c != null)
 			{
-				Triangle triangle = new Triangle(new Length(triangleInfo.a.Value), new Angle(triangleInfo.B.Value), new Length(triangleInfo.c.Value));
+				Triangle triangle = new Triangle(triangleInfo.a.Value, triangleInfo.B.Value, triangleInfo.c.Value);
 				AAngle.Text = triangle.AAngle.angle.ToString();
 				BLength.Text = triangle.BLength.length.ToString();
+				CAngle.Text = triangle.CAngle.angle.ToString();
+			}
+			else if (triangleInfo.A != null && triangleInfo.b != null & triangleInfo.c != null)
+			{
+				Triangle triangle = new Triangle(triangleInfo.A.Value, triangleInfo.b.Value, triangleInfo.c.Value);
+				ALength.Text = triangle.ALength.length.ToString();
+				BAngle.Text = triangle.BAngle.angle.ToString();
 				CAngle.Text = triangle.CAngle.angle.ToString();
 			}
 		}
