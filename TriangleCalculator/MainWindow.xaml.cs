@@ -82,75 +82,112 @@ namespace TriangleCalculator
 
 		public struct Triangle
 		{
-			public Length ALength;
-			public Length BLength;
-			public Length CLength;
-			public Angle AAngle;
-			public Angle BAngle;
-			public Angle CAngle;
-			public Triangle(Length _ALength, Length _BLength, Angle _CAngle)
+			public Length? a;
+			public Length? b;
+			public Length? c;
+			public Angle? A;
+			public Angle? B;
+			public Angle? C;
+
+			public double? sinusRelation
 			{
-				ALength = _ALength;
-				BLength = _BLength;
-				CAngle = _CAngle;
-				Debug.WriteLine("data: a: {0}, b: {1}, C: {2}", ALength.length, BLength.length, CAngle.angle);
-
-				CLength = new Length(Math.Sqrt(Math.Pow(ALength, 2) + Math.Pow(BLength, 2) - 2 * ALength * BLength * Math.Cos(CAngle.angleR)));
-				Debug.WriteLine("math.sqrt({0}^2 + {1} - 2 * {0} * {1} * cos({2}))", ALength.length, BLength.length, CAngle.angleR);
-
-				AAngle = new Angle(Math.Asin((Math.Sin(CAngle.angleR) / CLength) * ALength) * (180 / Math.PI));
-				Debug.WriteLine("arcsin({0} / sin({1}) * {2}) * (180 / pi)", CLength.length, CAngle.angleR, ALength.length);
-
-				BAngle = new Angle(180.0 - CAngle - AAngle);
-			}
-			public Triangle(Length _ALength, Angle _BAngle, Length _CLength)
-				: this(_ALength, _CLength, _BAngle)
-			{
-				Angle tmpAngle = BAngle;
-				BAngle = CAngle;
-				CAngle = tmpAngle;
-
-				Length tmpLength = BLength;
-				BLength = CLength;
-				CLength = tmpLength;
-			}
-			public Triangle(Angle _AAngle, Length _BLength, Length _CLength)
-				: this(_CLength, _BLength, _AAngle)
-			{
-				Angle tmpAngle = CAngle;
-				CAngle = AAngle;
-				AAngle = tmpAngle;
-
-				Length tmpLength = CLength;
-				CLength = ALength;
-				ALength = tmpLength;
-			}
-			
-			public Length getc(TriangleInfo info)
-			{
-				bool hasAllBInfo = info.B != null && info.b != null;
-				bool hasAllAInfo = info.A != null && info.a != null;
-				if (hasAllBInfo || hasAllBInfo && info.C != null)
+				get
 				{
-					return new Length((hasAllAInfo ? Math.Sin(info.A.Value.angleR) / info.a.Value : Math.Sin(info.B.Value.angleR) / info.b.Value) * Math.Sin(info.C.Value.angleR));
+					bool hasAllBInfo = B.HasValue && b.HasValue;
+					bool hasAllAInfo = A.HasValue && a.HasValue;
+					bool hasAllCInfo = C.HasValue && c.HasValue;
+					return hasAllAInfo ? Math.Sin(A.Value.angleR) / a.Value : (hasAllBInfo ? Math.Sin(B.Value.angleR) / b.Value : (hasAllCInfo ? (double?)Math.Sin(C.Value.angleR) / c.Value : null));
 				}
-				else if ()
-				{
+			}
 
+			public double? cosRelation
+			{
+				get
+				{
+					bool hasAllABInfo = a.HasValue && b.HasValue;
+					bool hasAllACInfo = a.HasValue && c.HasValue;
+					bool hasAllBCInfo = b.HasValue && c.HasValue;
+					return hasAllABInfo ? Math.Pow(a.Value, 2) * Math.Pow(b.Value, 2) - 2 * b.Value * a.Value :
+						(hasAllACInfo ? Math.Pow(a.Value, 2) * Math.Pow(c.Value, 2) - 2 * c.Value * a.Value :
+						(hasAllBCInfo ? (double?)Math.Pow(b.Value, 2) * Math.Pow(c.Value, 2) - 2 * c.Value * b.Value / c.Value : null));
 				}
+			}
+
+			public double? sinusRelationAngle
+			{
+				get
+				{
+					bool hasAllBInfo = B.HasValue && b.HasValue;
+					bool hasAllAInfo = A.HasValue && a.HasValue;
+					bool hasAllCInfo = C.HasValue && c.HasValue;
+					return hasAllAInfo ? a.Value / Math.Sin(A.Value.angleR) : (hasAllBInfo ? b.Value / Math.Sin(B.Value.angleR) : (hasAllCInfo ? c.Value / (double?)Math.Sin(C.Value.angleR) : null));
+				}
+			}
+
+			public double? cosRelationAngle
+			{
+				get
+				{
+					bool hasAllABInfo = a.HasValue && b.HasValue;
+					bool hasAllACInfo = a.HasValue && c.HasValue;
+					bool hasAllBCInfo = b.HasValue && c.HasValue;
+					return hasAllABInfo ? Math.Pow(a.Value, 2) * Math.Pow(b.Value, 2) - 2 * b.Value * a.Value :
+						(hasAllACInfo ? Math.Pow(a.Value, 2) * Math.Pow(c.Value, 2) - 2 * c.Value * a.Value :
+						(hasAllBCInfo ? (double?)Math.Pow(b.Value, 2) * Math.Pow(c.Value, 2) - 2 * c.Value * b.Value / c.Value : null));
+				}
+			}
+
+			public Length? getSide(Angle angle)
+			{
+				if (sinusRelation.HasValue)
+				{
+					return new Length(sinusRelation.Value * Math.Sin(angle.angleR));
+				}
+				else if (cosRelation.HasValue)
+				{
+					return new Length(cosRelation.Value * Math.Cos(angle.angleR));
+				}
+				return null;
+			}
+
+			public Angle? getAngle(Length length)
+			{
+				if (sinusRelation.HasValue)
+				{
+					return new Angle(Math.Asin(sinusRelation.Value * length.length));
+				}
+				else if (cosRelation.HasValue)
+				{
+					return new Length(cosRelation.Value * Math.Cos(angle.angleR));
+				}
+				return null;
 			}
 
 			/*Knowing one angle and 2 lengths with 1 length with the same symbol as the angle*/
 			public Triangle(TriangleInfo info)
 			{
-				
+				a = info.a;
+				b = info.b;
+				c = info.c; 
+				A = info.A;
+				B = info.B;
+				C = info.C;
+
+				a = a.HasValue ? a : getSide(info.A.Value);
+				b = b.HasValue ? b : getSide(info.B.Value);
+				c = c.HasValue ? c : getSide(info.C.Value);
+				A = A.Value;
+				B = B.Value;
+				C = C.Value;
 			}
 		}
 
 		public struct TriangleInfo
 		{
-			public bool hasEnoughInfo {
-				get {
+			public bool hasEnoughInfo
+			{
+				get
+				{
 					int infoAngle = (A == null) ? 0 : 1;
 					infoAngle += (B == null) ? 0 : 1;
 					infoAngle += (C == null) ? 0 : 1;
@@ -166,6 +203,9 @@ namespace TriangleCalculator
 					return false;
 				}
 			}
+
+			
+
 			public Length? a;
 			public Length? b;
 			public Length? c;
